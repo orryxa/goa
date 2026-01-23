@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; padding: 20px; }
+        .container { max-width: 1200px; }
+        .form-section { background: white; padding: 25px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; margin-bottom: 20px; }
+        .image-preview { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+        .image-container { position: relative; width: 120px; height: 120px; border: 2px dashed #ddd; border-radius: 8px; overflow: hidden; }
+        .image-container img { width: 100%; height: 100%; object-fit: cover; }
+        .remove-image { position: absolute; top: 5px; right: 5px; background: red; color: white; border-radius: 50%; width: 24px; height: 24px; border: none; cursor: pointer; }
+        .product-card { transition: transform 0.2s; }
+        .product-card:hover { transform: translateY(-5px); }
+        .image-gallery { display: flex; gap: 5px; margin-top: 10px; }
+        .thumbnail { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; cursor: pointer; border: 2px solid transparent; }
+        .thumbnail:hover, .thumbnail.active { border-color: #007bff; }
+        .modal-image { max-width: 100%; max-height: 400px; }
+        .form-label { font-weight: 500; }
+        .required::after { content: " *"; color: red; }
+        .dropdown-section h5 { border-bottom: 2px solid #007bff; padding-bottom: 8px; margin-bottom: 15px; color: #2c3e50; }
+        
+        /* Color Modal Styles */
+        .color-option { 
+            display: inline-block; 
+            width: 100px; 
+            height: 100px; 
+            margin: 5px; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
+            text-align: center;
+            line-height: 100px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+        .color-option:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-color: #007bff;
+        }
+        .color-option.selected { 
+            border: 3px solid #28a745; 
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.3);
+        }
+        .color-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+            gap: 10px; 
+            max-height: 400px; 
+            overflow-y: auto;
+            padding: 10px;
+        }
+        .color-preview { 
+            width: 30px; 
+            height: 30px; 
+            border-radius: 50%; 
+            display: inline-block; 
+            margin-right: 10px; 
+            vertical-align: middle;
+            border: 1px solid #ddd;
+        }
+        .color-dropdown-btn {
+            position: relative;
+            text-align: left;
+            padding-left: 50px;
+        }
+        .color-dropdown-btn .color-preview {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">🎯 Product Management System</h1>
+        
+        <!-- Add/Edit Product Form -->
+        <div class="form-section">
+            <h2 id="formTitle">➕ Add New Product</h2>
+            <form id="productForm">
+                <input type="hidden" id="rowNumber" value="">
+                
+                <div class="row">
+                    <!-- Basic Information -->
+                    <div class="col-md-6">
+                        <div class="dropdown-section">
+                            <h5>📋 Basic Information</h5>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required">Name</label>
+                            <input type="text" class="form-control" name="Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required">Sku Id</label>
+                            <input type="text" class="form-control" name="Sku Id" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Product Type</label>
+                            <select class="form-control" name="Product Type">
+                                <option value="">-- Select Product Type --</option>
+                                <option value="Polo T-Shirt">Polo T-Shirt</option>
+                                <option value="Regular T-Shirt">Regular T-Shirt</option>
+                                <option value="Oversized T-Shirt">Oversized T-Shirt</option>
+                                <option value="Polyester T-Shirt">Polyester T-Shirt</option>
+                                <option value="Polyester Polo T-Shirt">Polyester Polo T-Shirt</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Pricing -->
+                    <div class="col-md-6">
+                        <div class="dropdown-section">
+                            <h5>💰 Pricing</h5>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Cost Price (₹)</label>
+                                <input type="number" step="0.01" class="form-control" name="Cost Price">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">MRP (₹)</label>
+                                <input type="number" step="0.01" class="form-control" name="MRP">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label required">Selling Price (₹)</label>
+                                <input type="number" step="0.01" class="form-control" name="Selling Price" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">GST %</label>
+                                <input type="number" step="0.01" class="form-control" name="GST %" value="5">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label required">Quantity</label>
+                                <select class="form-control" name="Quantity" required>
+                                    <option value="">-- Select Quantity --</option>
+                                    <option value="1">1</option>
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                    <option value="200">200</option>
+                                    <option value="500">500</option>
+                                    <option value="1000">1000</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product Attributes -->
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="dropdown-section">
+                            <h5>🎨 Attributes</h5>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Size</label>
+                                <select class="form-control" name="Size">
+                                    <option value="">-- Select Size --</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                    <option value="XXL">XXL</option>
+                                    <option value="S to XXL">S to XXL</option>
+                                    <option value="M to XXL">M to XXL</option>
+                                    <option value="S to XL">S to XL</option>
+                                    <option value="M to XL">M to XL</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Colour</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="Colour" id="colourInput" readonly 
+                                           placeholder="Click to select colour">
+                                    <button class="btn btn-outline-secondary" type="button" id="selectColourBtn">
+                                        Select
+                                    </button>
+                                </div>
+                                <div class="color-preview-container mt-2" id="colorPreviewContainer" style="display: none;">
+                                    <span class="color-preview" id="selectedColorPreview"></span>
+                                    <span id="selectedColorText"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">attr1_material</label>
+                            <select class="form-control" name="attr1_material">
+                                <option value="">-- Select Material --</option>
+                                <option value="Cotton">Cotton</option>
+                                <option value="Polyester">Polyester</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">attr2_ideal for</label>
+                            <select class="form-control" name="attr2_ideal for">
+                                <option value="">-- Select Ideal For --</option>
+                                <option value="Plain T-Shirt">Plain T-Shirt</option>
+                                <option value="Printed">Printed</option>
+								<option value="Acid Wash">Acid Wash</option>
+                                <option value="Solid">Solid</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Packaging Details -->
+                    <div class="col-md-6">
+                        <div class="dropdown-section">
+                            <h5>📦 Packaging Details</h5>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Packaging Length (in cm)</label>
+                                <input type="number" step="0.1" class="form-control" name="Packaging Length (in cm)" value="30">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Packaging Breadth (in cm)</label>
+                                <input type="number" step="0.1" class="form-control" name="Packaging Breadth (in cm)" value="25">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Packaging Height (in cm)</label>
+                                <input type="number" step="0.1" class="form-control" name="Packaging Height (in cm)" value="3">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Packaging Weight (in kg)</label>
+                            <select class="form-control" name="Packaging Weight (in kg)">
+                                <option value="">-- Select Weight --</option>
+                                <option value="0.249">0.249 kg</option>
+                                <option value="0.250">0.250 kg</option>
+                                <option value="0.260">0.260 kg</option>
+                                <option value="0.270">0.270 kg</option>
+                                <option value="0.290">0.290 kg</option>
+                                <option value="0.300">0.300 kg</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Image Upload -->
+                <div class="mt-4">
+                    <div class="dropdown-section">
+                        <h5>🖼️ Product Images (Max 5)</h5>
+                    </div>
+                    <div class="mb-3">
+                        <input type="file" class="form-control" id="imageUpload" accept="image/*" multiple>
+                        <small class="text-muted">You can select multiple images (JPEG, PNG, WebP)</small>
+                    </div>
+                    <div class="image-preview" id="imagePreview"></div>
+                </div>
+                
+                <!-- Form Buttons -->
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary me-2" id="submitBtn">Add Product</button>
+                    <button type="button" class="btn btn-secondary" id="resetBtn">Reset Form</button>
+                    <button type="button" class="btn btn-warning" id="cancelEditBtn" style="display:none;">Cancel Edit</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Products List -->
+        <div class="form-section">
+            <h2>📦 All Products</h2>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>SKU</th>
+                            <th>Type</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Size</th>
+                            <th>Colour</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTable">
+                        <tr><td colspan="10" class="text-center">Loading products...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Image Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Product Images</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="" class="modal-image" id="modalImage">
+                    <div class="image-gallery mt-3" id="modalGallery"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Colour Selection Modal -->
+    <div class="modal fade" id="colourModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Select Colour</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="colourSearch" placeholder="Search colours...">
+                    </div>
+                    <div class="color-grid" id="colorGrid">
+                        <!-- Color options will be dynamically added here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmColourBtn">Select Colour</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ✅ REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT URL
+        const scriptUrl = "https://script.google.com/macros/s/AKfycbznxm8-vCs661Fx9HmnzDrljXbhfMQw_G-CjfbiktZAaZ-YaZKDaQdlOC3xWwibVMpxMg/exec";
+        
+        // Global variables
+        let products = [];
+        let selectedImages = [];
+        let editingRow = null;
+        let selectedColour = null;
+        
+        // Color definitions with hex codes
+        const colorOptions = [
+            { name: "White", hex: "#FFFFFF" },
+            { name: "Off White", hex: "#FAF9F6" },
+            { name: "Black", hex: "#000000" },
+            { name: "Red", hex: "#FF0000" },
+            { name: "Pink", hex: "#FFC0CB" },
+            { name: "Light Pink", hex: "#FFB6C1" },
+            { name: "Navy Blue", hex: "#000080" },
+            { name: "Blue", hex: "#0000FF" },
+            { name: "Sky Blue", hex: "#87CEEB" },
+            { name: "Marron", hex: "#800000" },
+            { name: "Mint Green", hex: "#98FF98" },
+            { name: "Olive Brown", hex: "#645403" },
+            { name: "Brown", hex: "#964B00" },
+            { name: "Olive", hex: "#808000" },
+            { name: "Yellow", hex: "#FFFF00" },
+            { name: "Grey", hex: "#808080" },
+            { name: "Light Blue", hex: "#ADD8E6" },
+            { name: "Orange", hex: "#FFA500" },
+            { name: "Dark Grey", hex: "#A9A9A9" },
+			{ name: "Olive Dark Green", hex: "#556b2f" },
+			{ name: "Purple", hex: "#994df0" }
+        ];
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProductTypes();
+            loadProducts();
+            initializeColorModal();
+            
+            // Form submission
+            document.getElementById('productForm').addEventListener('submit', handleFormSubmit);
+            
+            // Image upload handling
+            document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
+            
+            // Reset button
+            document.getElementById('resetBtn').addEventListener('click', resetForm);
+            
+            // Cancel edit button
+            document.getElementById('cancelEditBtn').addEventListener('click', cancelEdit);
+            
+            // Colour selection button
+            document.getElementById('selectColourBtn').addEventListener('click', openColourModal);
+            document.getElementById('colourInput').addEventListener('click', openColourModal);
+            
+            // Colour modal events
+            document.getElementById('confirmColourBtn').addEventListener('click', confirmColourSelection);
+            document.getElementById('colourSearch').addEventListener('input', filterColors);
+            
+            // Add event listeners for dropdown validation
+            const requiredSelect = document.querySelector('select[name="Quantity"]');
+            if (requiredSelect) {
+                requiredSelect.addEventListener('change', function() {
+                    this.classList.remove('is-invalid');
+                });
+            }
+        });
+        
+        // Initialize color modal with all colors
+        function initializeColorModal() {
+            const colorGrid = document.getElementById('colorGrid');
+            colorGrid.innerHTML = '';
+            
+            colorOptions.forEach(color => {
+                const colorOption = document.createElement('div');
+                colorOption.className = 'color-option';
+                colorOption.style.backgroundColor = color.hex;
+                colorOption.style.color = getContrastColor(color.hex);
+                colorOption.dataset.name = color.name;
+                colorOption.dataset.hex = color.hex;
+                colorOption.textContent = color.name;
+                
+                colorOption.addEventListener('click', function() {
+                    // Remove selection from all options
+                    document.querySelectorAll('.color-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    // Select this option
+                    this.classList.add('selected');
+                    selectedColour = {
+                        name: this.dataset.name,
+                        hex: this.dataset.hex
+                    };
+                });
+                
+                colorGrid.appendChild(colorOption);
+            });
+        }
+        
+        // Filter colors based on search input
+        function filterColors() {
+            const searchTerm = document.getElementById('colourSearch').value.toLowerCase();
+            const colorOptions = document.querySelectorAll('.color-option');
+            
+            colorOptions.forEach(option => {
+                const colorName = option.dataset.name.toLowerCase();
+                if (colorName.includes(searchTerm)) {
+                    option.style.display = 'inline-block';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+        }
+        
+        // Open colour selection modal
+        function openColourModal() {
+            // Clear previous selection
+            document.querySelectorAll('.color-option').forEach(opt => {
+                opt.classList.remove('selected');
+                if (selectedColour && opt.dataset.name === selectedColour.name) {
+                    opt.classList.add('selected');
+                }
+            });
+            
+            // Clear search
+            document.getElementById('colourSearch').value = '';
+            filterColors();
+            
+            // Show modal
+            const colourModal = new bootstrap.Modal(document.getElementById('colourModal'));
+            colourModal.show();
+        }
+        
+        // Confirm colour selection
+        function confirmColourSelection() {
+            if (selectedColour) {
+                // Update colour input
+                document.getElementById('colourInput').value = selectedColour.name;
+                
+                // Show color preview
+                const previewContainer = document.getElementById('colorPreviewContainer');
+                const colorPreview = document.getElementById('selectedColorPreview');
+                const colorText = document.getElementById('selectedColorText');
+                
+                colorPreview.style.backgroundColor = selectedColour.hex;
+                colorText.textContent = selectedColour.name;
+                previewContainer.style.display = 'block';
+                
+                // Close modal
+                bootstrap.Modal.getInstance(document.getElementById('colourModal')).hide();
+            } else {
+                alert('Please select a colour');
+            }
+        }
+        
+        // Helper function to determine text color based on background
+        function getContrastColor(hexColor) {
+            // Convert hex to RGB
+            const r = parseInt(hexColor.substr(1, 2), 16);
+            const g = parseInt(hexColor.substr(3, 2), 16);
+            const b = parseInt(hexColor.substr(5, 2), 16);
+            
+            // Calculate relative luminance
+            const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            
+            // Return white for dark backgrounds, black for light backgrounds
+            return luminance > 0.5 ? '#000000' : '#FFFFFF';
+        }
+        
+        // Get color code for badges
+        function getColorCode(colorName) {
+            const color = colorOptions.find(c => c.name === colorName);
+            return color ? color.hex : '#6c757d';
+        }
+        
+        // Get text color for badges
+        function getTextColor(colorName) {
+            const color = colorOptions.find(c => c.name === colorName);
+            return color ? getContrastColor(color.hex) : '#ffffff';
+        }
+        
+        // Load product types for autocomplete
+        async function loadProductTypes() {
+            try {
+                const url = `${scriptUrl}?action=getProductTypes`;
+                const response = await fetch(url);
+                const types = await response.json();
+                
+                const datalist = document.getElementById('productTypes');
+                if (datalist) {
+                    datalist.innerHTML = types.map(type => `<option value="${type}">`).join('');
+                }
+            } catch (error) {
+                console.error('Error loading product types:', error);
+            }
+        }
+        
+        // Load all products
+        async function loadProducts() {
+            try {
+                const url = `${scriptUrl}?action=getAllProducts`;
+                const response = await fetch(url);
+                products = await response.json();
+                
+                displayProducts(products);
+            } catch (error) {
+                console.error('Error loading products:', error);
+                document.getElementById('productsTable').innerHTML = 
+                    '<tr><td colspan="10" class="text-center text-danger">Error loading products</td></tr>';
+            }
+        }
+        
+        // Display products in table
+        function displayProducts(products) {
+            const tbody = document.getElementById('productsTable');
+            
+            if (products.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="10" class="text-center">No products found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = products.map(product => `
+                <tr class="product-card" id="row-${product.rowNumber}">
+                    <td>${product.rowNumber - 1}</td>
+                    <td>
+                        ${product.images && product.images.length > 0 ? 
+                            `<img src="${product.images[0]}" width="50" height="50" style="object-fit: cover; border-radius: 5px; cursor: pointer;" 
+                                  onclick="showImageModal(${product.rowNumber})" 
+                                  title="Click to view all images">` : 
+                            '<span class="text-muted">No image</span>'}
+                    </td>
+                    <td><strong>${product.Name || ''}</strong></td>
+                    <td><code>${product["Sku Id"] || ''}</code></td>
+                    <td><span class="badge bg-primary">${product["Product Type"] || '-'}</span></td>
+                    <td>
+                        <span class="badge bg-success">₹${product["Selling Price"] || 0}</span><br>
+                        <small class="text-muted"><del>₹${product.MRP || 0}</del></small>
+                    </td>
+                    <td>
+                        <span class="badge ${(product.Quantity || 0) > 0 ? 'bg-info' : 'bg-danger'}">
+                            ${product.Quantity || 0} in stock
+                        </span>
+                    </td>
+                    <td><span class="badge bg-secondary">${product.Size || '-'}</span></td>
+                    <td>
+                        ${product.Colour ? `
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <div style="width: 20px; height: 20px; border-radius: 50%; background-color: ${getColorCode(product.Colour)}; border: 1px solid #ddd;"></div>
+                                <span>${product.Colour}</span>
+                            </div>
+                        ` : '-'}
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-warning me-1 mb-1" onclick="editProduct(${product.rowNumber})">
+                            ✏️ Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger mb-1" onclick="deleteProduct(${product.rowNumber})">
+                            🗑️ Delete
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Handle form submission
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            // Validate required dropdown
+            const quantitySelect = document.querySelector('select[name="Quantity"]');
+            if (!quantitySelect.value) {
+                quantitySelect.classList.add('is-invalid');
+                quantitySelect.focus();
+                alert('Please select a quantity');
+                return;
+            }
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            const productData = {};
+            
+            // Convert FormData to object (preserves exact header names)
+            for (let [key, value] of formData.entries()) {
+                productData[key] = value;
+            }
+            
+            // Prepare request data
+            const requestData = {
+                productData: productData,
+                images: selectedImages
+            };
+            
+            const isEdit = editingRow !== null;
+            if (isEdit) {
+                requestData.action = 'update';
+                requestData.rowNumber = editingRow;
+            }
+            
+            // Show loading
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    body: JSON.stringify(requestData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    alert(`✅ Product ${isEdit ? 'updated' : 'added'} successfully!`);
+                    resetForm();
+                    loadProducts();
+                    
+                    if (!isEdit && result.rowNumber) {
+                        // Scroll to the new product
+                        setTimeout(() => {
+                            const newRow = document.getElementById(`row-${result.rowNumber}`);
+                            if (newRow) {
+                                newRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                newRow.classList.add('table-success');
+                                setTimeout(() => newRow.classList.remove('table-success'), 3000);
+                            }
+                        }, 500);
+                    }
+                } else {
+                    alert(`❌ Error: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('❌ Network error. Please check your connection and try again.');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+        
+        // Handle image upload
+        function handleImageUpload(e) {
+            const files = Array.from(e.target.files);
+            const preview = document.getElementById('imagePreview');
+            
+            // Limit to 5 images
+            const remainingSlots = 5 - selectedImages.length;
+            const filesToAdd = files.slice(0, remainingSlots);
+            
+            if (filesToAdd.length < files.length) {
+                alert(`Note: Only ${remainingSlots} images can be added (maximum 5 total).`);
+            }
+            
+            filesToAdd.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const imageData = {
+                            name: file.name,
+                            type: file.type,
+                            base64: e.target.result
+                        };
+                        
+                        selectedImages.push(imageData);
+                        displayImagePreview(imageData, selectedImages.length - 1);
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Reset file input
+            e.target.value = '';
+        }
+        
+        // Display image preview
+        function displayImagePreview(imageData, index) {
+            const preview = document.getElementById('imagePreview');
+            
+            const container = document.createElement('div');
+            container.className = 'image-container';
+            container.id = `preview-${index}`;
+            
+            const img = document.createElement('img');
+            img.src = imageData.base64;
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-image';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = () => removeImage(index);
+            
+            container.appendChild(img);
+            container.appendChild(removeBtn);
+            preview.appendChild(container);
+        }
+        
+        // Remove image
+        function removeImage(index) {
+            selectedImages.splice(index, 1);
+            updateImagePreviews();
+        }
+        
+        // Update all image previews
+        function updateImagePreviews() {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            
+            selectedImages.forEach((imageData, index) => {
+                displayImagePreview(imageData, index);
+            });
+        }
+        
+        // Reset form
+        function resetForm() {
+            document.getElementById('productForm').reset();
+            document.getElementById('rowNumber').value = '';
+            document.getElementById('imagePreview').innerHTML = '';
+            document.getElementById('colourInput').value = '';
+            document.getElementById('colorPreviewContainer').style.display = 'none';
+            selectedImages = [];
+            selectedColour = null;
+            
+            // Remove validation classes
+            const quantitySelect = document.querySelector('select[name="Quantity"]');
+            if (quantitySelect) {
+                quantitySelect.classList.remove('is-invalid');
+            }
+            
+            // Reset UI
+            document.getElementById('formTitle').textContent = '➕ Add New Product';
+            document.getElementById('submitBtn').textContent = 'Add Product';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+            
+            editingRow = null;
+        }
+        
+        // Edit product
+        async function editProduct(rowNumber) {
+            try {
+                const url = `${scriptUrl}?action=getProduct&rowNumber=${rowNumber}`;
+                const response = await fetch(url);
+                const product = await response.json();
+                
+                if (!product || !product.Name) {
+                    alert('Product not found!');
+                    return;
+                }
+                
+                // Fill form with product data
+                const form = document.getElementById('productForm');
+                Object.keys(product).forEach(key => {
+                    if (key !== 'rowNumber' && key !== 'images') {
+                        if (key === 'Colour') {
+                            // Handle colour specially
+                            document.getElementById('colourInput').value = product[key] || '';
+                            if (product[key]) {
+                                selectedColour = colorOptions.find(c => c.name === product[key]) || null;
+                                if (selectedColour) {
+                                    const previewContainer = document.getElementById('colorPreviewContainer');
+                                    const colorPreview = document.getElementById('selectedColorPreview');
+                                    const colorText = document.getElementById('selectedColorText');
+                                    
+                                    colorPreview.style.backgroundColor = selectedColour.hex;
+                                    colorText.textContent = selectedColour.name;
+                                    previewContainer.style.display = 'block';
+                                }
+                            }
+                        } else {
+                            const input = form.querySelector(`[name="${key}"]`);
+                            if (input) {
+                                // Handle select elements
+                                if (input.tagName === 'SELECT') {
+                                    const option = Array.from(input.options).find(opt => opt.value === product[key]);
+                                    if (option) {
+                                        option.selected = true;
+                                    } else {
+                                        // If value doesn't exist in dropdown, set as selected
+                                        input.value = product[key] || '';
+                                    }
+                                } else {
+                                    input.value = product[key] || '';
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Set editing state
+                editingRow = rowNumber;
+                document.getElementById('rowNumber').value = rowNumber;
+                document.getElementById('formTitle').textContent = '✏️ Edit Product';
+                document.getElementById('submitBtn').textContent = 'Update Product';
+                document.getElementById('cancelEditBtn').style.display = 'inline-block';
+                
+                // Clear image previews for edit (images remain in Drive)
+                document.getElementById('imagePreview').innerHTML = '';
+                selectedImages = [];
+                
+                // Scroll to form
+                document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                console.error('Error loading product for edit:', error);
+                alert('Error loading product data');
+            }
+        }
+        
+        // Cancel edit
+        function cancelEdit() {
+            resetForm();
+        }
+        
+        // Delete product
+        async function deleteProduct(rowNumber) {
+            if (!confirm('Are you sure you want to delete this product? This will also delete all associated images.')) {
+                return;
+            }
+            
+            try {
+                const requestData = {
+                    action: 'delete',
+                    rowNumber: rowNumber
+                };
+                
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    body: JSON.stringify(requestData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    alert('✅ Product deleted successfully!');
+                    loadProducts();
+                } else {
+                    alert(`❌ Error: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Error deleting product:', error);
+                alert('Error deleting product');
+            }
+        }
+        
+        // Show image modal
+        function showImageModal(rowNumber) {
+            const product = products.find(p => p.rowNumber === rowNumber);
+            if (!product || !product.images || product.images.length === 0) return;
+            
+            const modalImage = document.getElementById('modalImage');
+            const modalGallery = document.getElementById('modalGallery');
+            
+            modalImage.src = product.images[0];
+            modalGallery.innerHTML = '';
+            
+            product.images.forEach((img, index) => {
+                const thumbnail = document.createElement('img');
+                thumbnail.src = img;
+                thumbnail.className = `thumbnail ${index === 0 ? 'active' : ''}`;
+                thumbnail.onclick = () => {
+                    modalImage.src = img;
+                    document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                    thumbnail.classList.add('active');
+                };
+                modalGallery.appendChild(thumbnail);
+            });
+            
+            new bootstrap.Modal(document.getElementById('imageModal')).show();
+        }
+    </script>
+</body>
+</html>
