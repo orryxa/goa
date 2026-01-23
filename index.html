@@ -1,731 +1,2326 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Competition Enrollment Form</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .container {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            padding: 30px;
-            margin-top: 20px;
-            margin-bottom: 30px;
-        }
-        
-        h2 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 22px;
-        }
-        
-        .subtitle {
-            text-align: center;
-            color: #7f8c8d;
-            margin-bottom: 30px;
-            font-size: 16px;
-        }
-        
-        .section-title {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin: 25px 0 15px 0;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .section-title::before {
-            content: '📋';
-            font-size: 20px;
-        }
-        
-        .form-section {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 25px;
-            border-left: 4px solid #667eea;
-        }
-        
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 15px;
-        }
-        
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        label {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #34495e;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .required::after {
-            content: " *";
-            color: #e74c3c;
-        }
-        
-        input, textarea, select {
-            padding: 12px 15px;
-            border: 2px solid #e0e6ed;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            background-color: #fff;
-        }
-        
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-        
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        
-        .full-width {
-            grid-column: 1 / -1;
-        }
-        
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 30px;
-            padding-top: 25px;
-            border-top: 1px solid #eee;
-        }
-        
-        button {
-            padding: 14px 32px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .submit-btn {
-            background-color: #2ecc71;
-            color: white;
-        }
-        
-        .submit-btn:hover {
-            background-color: #27ae60;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
-        }
-        
-        .reset-btn {
-            background-color: #e74c3c;
-            color: white;
-        }
-        
-        .reset-btn:hover {
-            background-color: #c0392b;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
-        }
-        
-        .status-message {
-            text-align: center;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            font-weight: 500;
-            display: none;
-        }
-        
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            display: block;
-        }
-        
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            display: block;
-        }
-        
-        .validation-message {
-            font-size: 12px;
-            color: #e74c3c;
-            margin-top: 5px;
-            display: none;
-        }
-        
-        .info-box {
-            background-color: #e8f4fc;
-            border-left: 4px solid #3498db;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-        
-        .info-box h3 {
-            color: #2c3e50;
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
-        
-        .info-box p {
-            color: #546e7a;
-            font-size: 14px;
-        }
-        
-        .field-hint {
-            font-size: 12px;
-            color: #7f8c8d;
-            margin-top: 4px;
-            font-style: italic;
-        }
-        
-        @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .container {
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 24px;
-            }
-            
-            .button-container {
-                flex-direction: column;
-            }
-            
-            button {
-                width: 100%;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>📦 NowCarts Inventory Management</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* CSS Reset & Base */
+:root {
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-light: #818cf8;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #0ea5e9;
+  --purple: #8b5cf6;
+  --pink: #ec4899;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #1e293b;
+  --text-light: #64748b;
+  --border: #e2e8f0;
+  --shadow: rgba(0, 0, 0, 0.05);
+  --shadow-dark: rgba(0, 0, 0, 0.1);
+  --radius: 16px;
+  --radius-sm: 12px;
+  --radius-lg: 20px;
+  --sidebar-width: 280px;
+  --sidebar-bg: #ffffff;
+  --sidebar-text: #1e293b;
+  --sidebar-hover: #f1f5f9;
+  --header-height: 70px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  --primary: #818cf8;
+  --primary-dark: #6366f1;
+  --primary-light: #a5b4fc;
+  --success: #34d399;
+  --danger: #f87171;
+  --warning: #fbbf24;
+  --info: #38bdf8;
+  --purple: #a78bfa;
+  --pink: #f472b6;
+  --bg: #0f172a;
+  --card: #1e293b;
+  --text: #f1f5f9;
+  --text-light: #94a3b8;
+  --border: #334155;
+  --shadow: rgba(0, 0, 0, 0.2);
+  --shadow-dark: rgba(0, 0, 0, 0.3);
+  --sidebar-bg: #1e293b;
+  --sidebar-text: #f1f5f9;
+  --sidebar-hover: #334155;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  transition: var(--transition);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth Scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Header */
+header {
+  height: var(--header-height);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  padding: 4px 0;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 20px;
+}
+
+.btn-icon:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.btn-icon.active {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  width: var(--sidebar-width);
+  height: calc(100vh - var(--header-height));
+  background: var(--sidebar-bg);
+  box-shadow: 4px 0 20px var(--shadow-dark);
+  z-index: 900;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--border);
+}
+
+.sidebar.closed {
+  transform: translateX(-100%);
+}
+
+.sidebar-header {
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-light);
+  margin-bottom: 4px;
+}
+
+.sidebar-subtitle {
+  font-size: 14px;
+  color: var(--text-light);
+  opacity: 0.8;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-light) transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: var(--primary-light);
+  border-radius: 2px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  transition: var(--transition);
+  position: relative;
+  border-left: 4px solid transparent;
+  cursor: pointer;
+  user-select: none;
+}
+
+.nav-item:hover {
+  background: var(--sidebar-hover);
+  padding-left: 28px;
+}
+
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.1), transparent);
+  color: var(--primary);
+  border-left-color: var(--primary);
+  font-weight: 600;
+}
+
+.nav-item.active .nav-icon {
+  background: var(--primary);
+  color: white;
+}
+
+.nav-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sidebar-hover);
+  color: var(--text-light);
+  transition: var(--transition);
+  font-size: 18px;
+}
+
+.nav-text {
+  flex: 1;
+  font-size: 15px;
+}
+
+.nav-badge {
+  padding: 4px 10px;
+  background: var(--warning);
+  color: white;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 28px;
+  text-align: center;
+  animation: pulse 2s infinite;
+}
+
+/* Main Content */
+.main-content {
+  margin-left: var(--sidebar-width);
+  margin-top: var(--header-height);
+  min-height: calc(100vh - var(--header-height));
+  transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+  background: var(--bg);
+}
+
+.main-content.expanded {
+  margin-left: 0;
+}
+
+/* Dashboard View */
+.dashboard-view {
+  padding: 24px;
+  animation: fadeIn 0.5s ease;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.dashboard-title h1 {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary), var(--pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dashboard-title p {
+  color: var(--text-light);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.last-updated {
+  background: var(--card);
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px var(--shadow);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.last-updated i {
+  color: var(--success);
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: 0 4px 20px var(--shadow);
+  border: 1px solid var(--border);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px var(--shadow-dark);
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--purple));
+}
+
+.stat-card.green::before { background: linear-gradient(90deg, var(--success), #34d399); }
+.stat-card.red::before { background: linear-gradient(90deg, var(--danger), #f87171); }
+.stat-card.orange::before { background: linear-gradient(90deg, var(--warning), #fbbf24); }
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: white;
+  background: var(--primary);
+}
+
+.stat-icon.green { background: var(--success); }
+.stat-icon.red { background: var(--danger); }
+.stat-icon.orange { background: var(--warning); }
+
+.stat-value {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.stat-change {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.stat-change.positive { color: var(--success); }
+.stat-change.negative { color: var(--danger); }
+
+/* Quick Actions */
+.quick-actions {
+  margin-bottom: 32px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.action-btn {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+}
+
+.action-btn:hover {
+  border-color: var(--primary);
+  transform: translateX(4px);
+}
+
+.action-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: white;
+}
+
+.action-content h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.action-content p {
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+/* Low Stock Preview */
+.low-stock-preview {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: 0 4px 20px var(--shadow);
+  border: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.preview-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.preview-title h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.preview-badge {
+  background: var(--warning);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.preview-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.preview-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+.preview-item:hover {
+  background: var(--sidebar-hover);
+  transform: translateX(4px);
+}
+
+.item-info h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.item-info p {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.item-qty {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--warning);
+}
+
+/* Page View */
+.page-view {
+  display: none;
+  height: calc(100vh - var(--header-height));
+}
+
+.iframe-container {
+  height: 100%;
+  padding: 24px;
+  position: relative;
+}
+
+.iframe-wrapper {
+  height: 100%;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 8px 30px var(--shadow-dark);
+  border: 1px solid var(--border);
+  position: relative;
+}
+
+#iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: var(--card);
+}
+
+/* Enhanced Low Stock Modal - Scrollable */
+.low-stock-modal {
+  width: 90%;
+  max-width: 900px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.low-stock-header {
+  background: linear-gradient(135deg, var(--warning), #f59e0b);
+  color: white;
+  padding: 20px 24px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  flex-shrink: 0;
+}
+
+.low-stock-header h3 {
+  color: white;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.low-stock-content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.low-stock-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.summary-card {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  text-align: center;
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.summary-card.critical {
+  border-color: var(--danger);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.summary-card.warning {
+  border-color: var(--warning);
+  background: rgba(245, 158, 11, 0.05);
+}
+
+.summary-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.summary-label {
+  font-size: 13px;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.summary-card.critical .summary-value {
+  color: var(--danger);
+}
+
+.summary-card.warning .summary-value {
+  color: var(--warning);
+}
+
+.low-stock-filters {
+  display: flex;
+  gap: 12px;
+  padding: 0 24px 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.filter-btn {
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 100px;
+  text-align: center;
+}
+
+.filter-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+
+.filter-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.low-stock-table-container {
+  margin: 0 24px 24px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.low-stock-table-wrapper {
+  max-height: 300px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.low-stock-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.low-stock-table th {
+  position: sticky;
+  top: 0;
+  background: var(--card);
+  color: var(--text-light);
+  font-weight: 600;
+  text-align: left;
+  padding: 16px;
+  border-bottom: 2px solid var(--border);
+  z-index: 1;
+}
+
+.low-stock-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.low-stock-table tr:last-child td {
+  border-bottom: none;
+}
+
+.low-stock-table tr:hover {
+  background: var(--sidebar-hover);
+}
+
+.stock-level {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
+
+.stock-level.critical {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.stock-level.warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.stock-level.low {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.low-stock-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--card);
+}
+
+.action-btn-primary {
+  padding: 12px 24px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 160px;
+  justify-content: center;
+}
+
+.action-btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.action-btn-secondary {
+  padding: 12px 24px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 500;
+  transition: var(--transition);
+  min-width: 120px;
+  text-align: center;
+}
+
+.action-btn-secondary:hover {
+  background: var(--sidebar-hover);
+  border-color: var(--primary);
+}
+
+/* Modals */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.modal-header {
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.modal-header h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-close {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: none;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  margin-left: auto;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.modal-close:hover {
+  background: var(--danger);
+  color: white;
+}
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Tables */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.data-table th {
+  background: var(--bg);
+  color: var(--text-light);
+  font-weight: 600;
+  text-align: left;
+  padding: 16px;
+  border-bottom: 2px solid var(--border);
+}
+
+.data-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.data-table tr:hover {
+  background: var(--sidebar-hover);
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status-badge.low {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning);
+}
+
+/* Settings */
+.settings-group {
+  margin-bottom: 24px;
+}
+
+.settings-group h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+.setting-item:hover {
+  border-color: var(--primary);
+}
+
+.setting-info h5 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.setting-info p {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 32px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--border);
+  transition: var(--transition);
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 24px;
+  width: 24px;
+  left: 4px;
+  bottom: 4px;
+  background: white;
+  transition: var(--transition);
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+input:checked + .slider {
+  background: var(--primary);
+}
+
+input:checked + .slider:before {
+  transform: translateX(28px);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .low-stock-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  :root {
+    --sidebar-width: 260px;
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+  
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .header-content .logo span {
+    display: inline;
+    font-size: 16px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .last-updated {
+    width: 100%;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  header {
+    padding: 0 16px;
+  }
+  
+  .btn-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .logo span {
+    font-size: 16px;
+  }
+  
+  /* Low Stock Modal Mobile Optimizations */
+  .low-stock-modal {
+    width: 95%;
+    max-height: 90vh;
+    margin: 10px;
+  }
+  
+  .low-stock-summary {
+    grid-template-columns: 1fr 1fr;
+    margin: 16px;
+    gap: 12px;
+  }
+  
+  .summary-card {
+    padding: 16px;
+  }
+  
+  .summary-value {
+    font-size: 28px;
+  }
+  
+  .summary-label {
+    font-size: 12px;
+  }
+  
+  .low-stock-filters {
+    padding: 0 16px 16px;
+  }
+  
+  .filter-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    min-width: 80px;
+  }
+  
+  .low-stock-table-container {
+    margin: 0 16px 16px;
+  }
+  
+  .low-stock-table-wrapper {
+    max-height: 250px;
+  }
+  
+  .low-stock-table {
+    min-width: 500px;
+  }
+  
+  .low-stock-table th,
+  .low-stock-table td {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+  
+  .stock-level {
+    padding: 4px 8px;
+    font-size: 11px;
+    min-width: 70px;
+  }
+  
+  .low-stock-actions {
+    padding: 16px;
+    flex-direction: column;
+  }
+  
+  .action-btn-primary,
+  .action-btn-secondary {
+    width: 100%;
+    padding: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  .dashboard-view {
+    padding: 16px;
+  }
+  
+  .stat-card {
+    padding: 20px;
+  }
+  
+  .stat-value {
+    font-size: 32px;
+  }
+  
+  .modal-content {
+    margin: 10px;
+    max-height: 95vh;
+  }
+  
+  .modal-body {
+    padding: 16px;
+  }
+  
+  .data-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .nav-item {
+    padding: 14px 20px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  /* Low Stock Modal Extra Small Screens */
+  .low-stock-modal {
+    width: 100%;
+    max-height: 95vh;
+    margin: 5px;
+  }
+  
+  .low-stock-summary {
+    grid-template-columns: 1fr 1fr;
+    margin: 12px;
+    gap: 10px;
+  }
+  
+  .summary-value {
+    font-size: 24px;
+  }
+  
+  .summary-label {
+    font-size: 11px;
+  }
+  
+  .low-stock-header {
+    padding: 16px;
+  }
+  
+  .low-stock-header h3 {
+    font-size: 18px;
+  }
+  
+  .modal-close {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+  
+  .low-stock-table {
+    min-width: 400px;
+  }
+  
+  .low-stock-table th,
+  .low-stock-table td {
+    padding: 10px 6px;
+    font-size: 12px;
+  }
+  
+  .stock-level {
+    padding: 3px 6px;
+    font-size: 10px;
+    min-width: 60px;
+  }
+}
+
+/* Tablet Specific */
+@media (min-width: 577px) and (max-width: 992px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .sidebar {
+    width: 300px;
+  }
+  
+  .low-stock-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* No Scrollbars on Mobile/Tablet */
+@media (max-width: 992px) {
+  body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .sidebar-nav {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .sidebar-nav::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .modal-body,
+  .low-stock-content,
+  .low-stock-table-wrapper {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .modal-body::-webkit-scrollbar,
+  .low-stock-content::-webkit-scrollbar,
+  .low-stock-table-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Touch Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .btn-icon:active,
+  .nav-item:active,
+  .action-btn:active,
+  .stat-card:active,
+  .preview-item:active,
+  .filter-btn:active,
+  .summary-card:active {
+    transform: scale(0.98);
+    transition: transform 0.1s;
+  }
+  
+  .btn-icon:hover,
+  .nav-item:hover,
+  .action-btn:hover,
+  .stat-card:hover,
+  .preview-item:hover,
+  .filter-btn:hover,
+  .summary-card:hover {
+    transform: none;
+  }
+  
+  .action-btn-primary:active,
+  .action-btn-secondary:active {
+    transform: scale(0.98);
+  }
+  
+  .action-btn-primary:hover,
+  .action-btn-secondary:hover {
+    transform: none;
+  }
+}
+
+/* Landscape Mode */
+@media (max-height: 600px) and (orientation: landscape) {
+  .dashboard-view {
+    padding: 16px;
+  }
+  
+  .stat-card {
+    padding: 16px;
+  }
+  
+  .stat-value {
+    font-size: 28px;
+  }
+  
+  .sidebar {
+    overflow-y: auto;
+  }
+  
+  .low-stock-table-wrapper {
+    max-height: 200px;
+  }
+  
+  .low-stock-summary {
+    margin: 16px;
+  }
+  
+  .summary-card {
+    padding: 12px;
+  }
+  
+  .summary-value {
+    font-size: 24px;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --border: #000000;
+    --shadow: rgba(0, 0, 0, 0.5);
+  }
+  
+  .btn-icon,
+  .action-btn,
+  .stat-card,
+  .preview-item,
+  .summary-card {
+    border-width: 2px;
+  }
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h2>🏆 Competition Enrollment Form (Ujjwal Academy)</h2>
-        <p class="subtitle">Fill in all the required details to enroll in the competition</p>
-        
-        <div class="info-box">
-            <h3>📋 Important Information</h3>
-            <p>Please fill all the required fields marked with <span style="color: #e74c3c;">*</span>. Your data will be securely saved to Google Sheets.</p>
+
+<header>
+  <div class="header-content">
+    <button class="btn-icon menu-toggle" id="menuToggle">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="logo">
+      <div class="logo-icon">
+        <i class="fas fa-boxes"></i>
+      </div>
+      <span>NowCarts Inventory Management</span>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn-icon theme-toggle" id="themeToggle">
+      <i class="fas fa-moon"></i>
+    </button>
+  </div>
+</header>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">Navigation</div>
+    <div class="sidebar-subtitle">Manage your inventory efficiently</div>
+  </div>
+  
+  <div class="sidebar-nav">
+    <div class="nav-item active" onclick="loadDashboard()">
+      <div class="nav-icon">
+        <i class="fas fa-tachometer-alt"></i>
+      </div>
+      <div class="nav-text">Dashboard</div>
+    </div>
+    
+    <div class="nav-item" onclick="loadPage('Supplier', 'Inventory/SuplierManagement.html')">
+      <div class="nav-icon">
+        <i class="fas fa-truck"></i>
+      </div>
+      <div class="nav-text">Supplier</div>
+    </div>
+    
+    <div class="nav-item" onclick="loadPage('Update', 'Inventory/InventoryManagement.html')">
+      <div class="nav-icon">
+        <i class="fas fa-sync-alt"></i>
+      </div>
+      <div class="nav-text">Update</div>
+    </div>
+    
+    <div class="nav-item" onclick="loadPage('Summary', 'Inventory/InvSummary.html')">
+      <div class="nav-icon">
+        <i class="fas fa-chart-bar"></i>
+      </div>
+      <div class="nav-text">Summary</div>
+    </div>
+    
+    <div class="nav-item" onclick="loadPage('Purchase', 'Inventory/InvAddPur.html')">
+      <div class="nav-icon">
+        <i class="fas fa-shopping-cart"></i>
+      </div>
+      <div class="nav-text">Purchase</div>
+    </div>
+    
+    <div class="nav-item" onclick="loadPage('Sale', 'Inventory/InvAddSale.html')">
+      <div class="nav-icon">
+        <i class="fas fa-cash-register"></i>
+      </div>
+      <div class="nav-text">Sale</div>
+    </div>
+    
+    <div class="nav-item" onclick="loadPage('Receipt', 'Inventory/ReceiptUpload.html')">
+      <div class="nav-icon">
+        <i class="fas fa-receipt"></i>
+      </div>
+      <div class="nav-text">Receipt</div>
+    </div>
+    
+    <div class="nav-item" onclick="loadPage('ShopDeck', 'Other Activity/shopdeckForm.html')">
+      <div class="nav-icon">
+        <i class="fas fa-store"></i>
+      </div>
+      <div class="nav-text">ShopDeck</div>
+    </div>
+    
+    <div class="nav-item" onclick="openLowStock()">
+      <div class="nav-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <div class="nav-text">Low Stock</div>
+      <div class="nav-badge" id="sidebarLowStock">—</div>
+    </div>
+    
+    <div class="nav-item" onclick="openSettings()">
+      <div class="nav-icon">
+        <i class="fas fa-cog"></i>
+      </div>
+      <div class="nav-text">Settings</div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content" id="mainContent">
+  <!-- Dashboard View -->
+  <div class="dashboard-view" id="dashboardView">
+    <div class="dashboard-header">
+      <div class="dashboard-title">
+        <h1>Dashboard Overview</h1>
+        <p>Real-time insights into your inventory performance</p>
+      </div>
+      <div class="last-updated">
+        <i class="fas fa-sync-alt"></i>
+        <span id="lastUpdated">Last updated: —</span>
+      </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card" onclick="loadPage('Summary', 'Inventory/InvSummary.html')">
+        <div class="stat-header">
+          <div class="stat-label">Total Inventory</div>
+          <div class="stat-icon">
+            <i class="fas fa-boxes"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="totalInv">—</div>
+        <div class="stat-change positive">
+          <i class="fas fa-arrow-up"></i>
+          <span>Updated live</span>
+        </div>
+      </div>
+      
+      <div class="stat-card green" onclick="openLowStock()">
+        <div class="stat-header">
+          <div class="stat-label">Stock In</div>
+          <div class="stat-icon green">
+            <i class="fas fa-arrow-down"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="stockIn">—</div>
+        <div class="stat-change positive">
+          <i class="fas fa-arrow-up"></i>
+          <span>Active items</span>
+        </div>
+      </div>
+      
+      <div class="stat-card red" onclick="openLowStock()">
+        <div class="stat-header">
+          <div class="stat-label">Stock Out</div>
+          <div class="stat-icon red">
+            <i class="fas fa-arrow-up"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="stockOut">—</div>
+        <div class="stat-change negative">
+          <i class="fas fa-arrow-down"></i>
+          <span>Require restocking</span>
+        </div>
+      </div>
+      
+      <div class="stat-card orange" onclick="openLowStock()">
+        <div class="stat-header">
+          <div class="stat-label">Low Stock Alert</div>
+          <div class="stat-icon orange">
+            <i class="fas fa-exclamation"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="lowStockMain">—</div>
+        <div class="stat-change negative">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>Needs attention</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <div class="section-header">
+        <h2>Quick Actions</h2>
+      </div>
+      <div class="actions-grid">
+        <div class="action-btn" onclick="loadPage('Purchase', 'Inventory/InvAddPur.html')">
+          <div class="action-icon" style="background: var(--success);">
+            <i class="fas fa-plus"></i>
+          </div>
+          <div class="action-content">
+            <h3>Add Purchase</h3>
+            <p>Record new inventory items</p>
+          </div>
         </div>
         
-        <form id="enrollmentForm">
-            <!-- Hidden fields for spreadsheet information -->
-            <input type="hidden" name="spreadsheetId" value="1lZAm1BsDnhSkPXBpdHYS11hJtJCcSgdrxUZz3IFVYFY">
-            <input type="hidden" name="sheetName" value="Competion_Enroll">
-            
-            <!-- Section A: Personal Details -->
-            <div class="section-title">Fill the Forms</div>
-            <div class="form-section">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="date" class="required">
-                            <span>📅 Date</span>
-                        </label>
-                        <input type="date" id="date" name="Date" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="fullName" class="required">
-                            <span>👤 Full Name</span>
-                        </label>
-                        <input type="text" id="fullName" name="Full Name" placeholder="Enter your full name" required>
-                    </div>
-                    
-                   <!--   <div class="form-group">
-                        <label for="fatherName" class="required">
-                            <span>👨 Father's Name</span>
-                        </label>
-                        <input type="text" id="fatherName" name="Father Name" placeholder="Enter father's name" required>
-                    </div>
-                    
-                  <div class="form-group">
-                        <label for="fatherOccupation">
-                            <span>💼 Father's Occupation</span>
-                        </label>
-                        <input type="text" id="fatherOccupation" name="Father Occupation" placeholder="Enter occupation">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="motherName" class="required">
-                            <span>👩 Mother's Name</span>
-                        </label>
-                        <input type="text" id="motherName" name="Mother Name" placeholder="Enter mother's name" required>
-                    </div>
-                    
-                  <!--  <div class="form-group">
-                        <label for="motherOccupation">
-                            <span>💼 Mother's Occupation</span>
-                        </label>
-                        <input type="text" id="motherOccupation" name="Mother Occupation" placeholder="Enter occupation">
-                    </div> -->
-                    
-                    <div class="form-group">
-                        <label for="dob" class="required">
-                            <span>🎂 Date of Birth</span>
-                        </label>
-                        <input type="date" id="dob" name="Date of Birth" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="gender" class="required">
-                            <span>⚤ Gender</span>
-                        </label>
-                        <select id="gender" name="Gender" required>
-                            <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
-                    </div>
-                    
-                   <!-- <div class="form-group">
-                        <label for="email" class="required">
-                            <span>📧 Email ID</span>
-                        </label>
-                        <input type="email" id="email" name="Email ID" placeholder="example@domain.com" required>
-                        <div class="field-hint">Please enter a valid email address</div>
-                        <div class="validation-message" id="emailError">Invalid email format</div>
-                    </div> -->
-                    
-                    <div class="form-group">
-                        <label for="personalMobile">
-                            <span>📱 Personal Mobile No</span>
-                        </label>
-                        <input type="tel" id="personalMobile" name="Personal Mobile No" placeholder="Enter 10-digit mobile number" maxlength="10">
-                        <div class="field-hint">Must start with 6, 7, 8, or 9</div>
-                        <div class="validation-message" id="personalMobileError">Invalid mobile number. Must start with 6,7,8,9 and be 10 digits</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="parentsMobile" class="required">
-                            <span>📱 Parents Mobile No</span>
-                        </label>
-                        <input type="tel" id="parentsMobile" name="Parents Mobile No" placeholder="Enter 10-digit mobile number" required maxlength="10">
-                        <div class="field-hint">Must start with 6, 7, 8, or 9</div>
-                        <div class="validation-message" id="parentsMobileError">Invalid mobile number. Must start with 6,7,8,9 and be 10 digits</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="whatsappNo">
-                            <span>💬 WhatsApp No</span>
-                        </label>
-                        <input type="tel" id="whatsappNo" name="Whatsapp No" placeholder="Enter WhatsApp number" maxlength="10">
-                        <div class="field-hint">Optional - Enter if different from above</div>
-                        <div class="validation-message" id="whatsappError">Invalid mobile number. Must start with 6,7,8,9 and be 10 digits</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Section B: Education Details 
-            <div class="section-title">B. Education Details</div> -->
-            <div class="form-section">
-                <div class="form-grid">
-                    <div class="form-group full-width">
-                        <label for="schoolName" class="required">
-                            <span>🏫 School Name</span>
-                        </label>
-                        <input type="text" id="schoolName" name="School Name" placeholder="Enter your school name" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="studyStd" class="required">
-                            <span>📚 Study in STD</span>
-                        </label>
-                        <select id="studyStd" name="Study in STD" required>
-                            <option value="">Select Standard</option>
-                            <option value="8th Std">8th Std</option>
-                            <option value="9th Std">9th Std</option>
-                            <option value="10th Std">10th Std</option>
-                        </select>
-                    </div>
-                    
-                   <!-- <div class="form-group">
-                        <label for="lastExamMarks" class="required">
-                            <span>📊 Last Exam Marks (%)</span>
-                        </label>
-                        <input type="number" id="lastExamMarks" name="Last Exam Marks" placeholder="Enter percentage" required min="0" max="100" step="0.01">
-                        <div class="field-hint">Enter percentage (0-100)</div>
-                        <div class="validation-message" id="marksError">Please enter a valid percentage between 0 and 100</div>
-                    </div> -->
-                    
-                    <div class="form-group">
-                        <label for="className" class="required">
-                            <span>🏫 Coaching classes Name</span>
-                        </label>
-                        <input type="text" id="className" name="Class Name" placeholder="Your Classes Name" required>
-                    </div>
-                    
-                   <!-- <div class="form-group">
-                        <label for="boardSeatNo">
-                            <span>🎫 Board Seat No</span>
-                        </label>
-                        <input type="text" id="boardSeatNo" name="Board Seat No" placeholder="Enter Hall Ticket number">
-                    </div> -->
-                    
-                    <div class="form-group">
-                        <label for="wantToChoose" class="required">
-                            <span>🎯 Want to Choose</span>
-                        </label>
-                        <input type="text" id="wantToChoose" name="Want to Choose" placeholder="Commerce, Science, Arts" required>
-                    </div>
-                    
-                <!--    <div class="form-group">
-                        <label for="anyReason">
-                            <span>❓ Any Reason</span>
-                        </label>
-                        <textarea id="anyReason" name="Any Reason" placeholder="Any specific reason for choosing Science, Commerce, Arts"></textarea>
-                    </div> -->
-                </div>
-            </div>
-            
-            <!-- Section C: Other Activity 
-            <div class="section-title">C. Other Activity</div> -->
-            <div class="form-section">
-              <!--  <div class="form-grid">
-                    <div class="form-group">
-                        <label for="otherActivity">
-                            <span>🎭 Other Activity</span>
-                        </label>
-                        <input type="text" id="otherActivity" name="Other Activity" placeholder="e.g., Dance, Music, Art">
-                    </div> -->
-                    
-                    <div class="form-group full-width">
-                        <label for="address" class="required">
-                            <span>📍 Address</span>
-                        </label>
-                        <textarea id="address" name="Address" placeholder="Enter complete address" required></textarea>
-                    </div>
-                    
-                   <!-- <div class="form-group full-width">
-                        <label for="notes">
-                            <span>📝 Comments</span>
-                        </label>
-                        <textarea id="notes" name="Notes" placeholder="Any additional notes or comments"></textarea>
-                    </div> -->
-                </div>
-            </div>
-            
-            <div class="button-container">
-                <button type="submit" class="submit-btn">
-                    <span>✅ Submit Enrollment</span>
-                </button>
-                <button type="reset" class="reset-btn">
-                    <span>🗑️ Clear Form</span>
-                </button>
-            </div>
-            
-            <div id="statusMessage" class="status-message"></div>
-        </form>
+        <div class="action-btn" onclick="loadPage('Sale', 'Inventory/InvAddSale.html')">
+          <div class="action-icon" style="background: var(--primary);">
+            <i class="fas fa-minus"></i>
+          </div>
+          <div class="action-content">
+            <h3>Record Sale</h3>
+            <p>Update inventory after sales</p>
+          </div>
+        </div>
+        
+        <div class="action-btn" onclick="loadPage('Update', 'Inventory/InventoryManagement.html')">
+          <div class="action-icon" style="background: var(--info);">
+            <i class="fas fa-edit"></i>
+          </div>
+          <div class="action-content">
+            <h3>Update Items</h3>
+            <p>Modify existing inventory</p>
+          </div>
+        </div>
+        
+        <div class="action-btn" onclick="openLowStock()">
+          <div class="action-icon" style="background: var(--warning);">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="action-content">
+            <h3>Check Low Stock</h3>
+            <p>View items needing restock</p>
+          </div>
+        </div>
+      </div>
     </div>
+    
+    <!-- Low Stock Preview -->
+    <div class="low-stock-preview">
+      <div class="preview-header">
+        <div class="preview-title">
+          <h3>Low Stock Items</h3>
+          <div class="preview-badge" id="lowStockCount">—</div>
+        </div>
+        <button class="btn-icon" onclick="openLowStock()" style="background: var(--warning); color: white;">
+          <i class="fas fa-external-link-alt"></i>
+        </button>
+      </div>
+      <div class="preview-items" id="lowStockPreview">
+        <div class="preview-item">
+          <div class="item-info">
+            <h4>Loading items...</h4>
+            <p>Please wait</p>
+          </div>
+          <div class="item-qty">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page View -->
+  <div class="page-view" id="pageView">
+    <div class="iframe-container">
+      <div class="iframe-wrapper">
+        <iframe id="iframe"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <script>
-        // Configuration
-        const CONFIG = {
-            // IMPORTANT: Replace with your actual Google Apps Script web app URL after deployment
-            scriptUrl: 'https://script.google.com/macros/s/AKfycbz6J_9Tx5Rdj_t1iEMW2t9iJvKLZIZvB-V1swiiYN20U1Xu1pZ7Ot8hl07BNNHenWU3/exec'
-        };
+<!-- Enhanced Low Stock Modal - Scrollable with Mobile Grid -->
+<div class="modal" id="lowStockModal">
+  <div class="modal-content low-stock-modal">
+    <div class="low-stock-header">
+      <h3>
+        <i class="fas fa-exclamation-triangle"></i>
+        Low Stock Analysis
+      </h3>
+      <button class="modal-close" onclick="closeLowStock()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="low-stock-content">
+      <!-- Summary Grid - 2 columns on mobile -->
+      <div class="low-stock-summary" id="lowStockSummary">
+        <div class="summary-card critical">
+          <div class="summary-value" id="criticalCount">0</div>
+          <div class="summary-label">Critical Items (<5)</div>
+        </div>
+        <div class="summary-card warning">
+          <div class="summary-value" id="warningCount">0</div>
+          <div class="summary-label">Warning Items (5-7)</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-value" id="lowCount">0</div>
+          <div class="summary-label">Low Items (8-9)</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-value" id="totalLowStock">0</div>
+          <div class="summary-label">Total Low Stock</div>
+        </div>
+      </div>
+      
+      <!-- Filters -->
+      <div class="low-stock-filters">
+        <button class="filter-btn active" onclick="filterLowStock('all')">All Items</button>
+        <button class="filter-btn" onclick="filterLowStock('critical')">Critical Only</button>
+        <button class="filter-btn" onclick="filterLowStock('warning')">Warning Only</button>
+        <button class="filter-btn" onclick="filterLowStock('low')">Low Only</button>
+      </div>
+      
+      <!-- Scrollable Table Container -->
+      <div class="low-stock-table-container">
+        <div class="low-stock-table-wrapper">
+          <table class="low-stock-table" id="lowStockTable">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Size</th>
+                <th>Current Stock</th>
+                <th>Status</th>
+                <th>Action Needed</th>
+              </tr>
+            </thead>
+            <tbody id="lowStockTableBody">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-light);">
+                  <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 16px; display: block;"></i>
+                  Loading low stock items...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Actions Footer -->
+    <div class="low-stock-actions">
+      <button class="action-btn-secondary" onclick="closeLowStock()">
+        Close
+      </button>
+      <button class="action-btn-primary" onclick="exportLowStock()">
+        <i class="fas fa-download"></i>
+        Export Report
+      </button>
+    </div>
+  </div>
+</div>
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize form
-            initForm();
-            
-            // Set today's date as default
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('date').value = today;
-            
-            // Set max date for DOB (minimum age 5 years)
-            const maxDob = new Date();
-            maxDob.setFullYear(maxDob.getFullYear() - 5);
-            document.getElementById('dob').max = maxDob.toISOString().split('T')[0];
-        });
-
-        function initForm() {
-            const form = document.getElementById('enrollmentForm');
-            const statusMessage = document.getElementById('statusMessage');
-            
-            // Mobile number validation function
-            function isValidMobileNumber(number) {
-                if (!number) return false;
-                const mobilePattern = /^[6-9]\d{9}$/;
-                return mobilePattern.test(number.replace(/\D/g, ''));
-            }
-            
-            // Email validation function
-            function isValidEmail(email) {
-                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return emailPattern.test(email);
-            }
-            
-            // Validate mobile number fields
-            function validateMobileField(fieldId, errorId, required = true) {
-                const field = document.getElementById(fieldId);
-                const error = document.getElementById(errorId);
-                
-                field.addEventListener('input', function() {
-                    this.value = this.value.replace(/\D/g, '').slice(0, 10);
-                });
-                
-                field.addEventListener('blur', function() {
-                    if ((required && !this.value) || (this.value && !isValidMobileNumber(this.value))) {
-                        error.style.display = 'block';
-                        field.style.borderColor = '#e74c3c';
-                        return false;
-                    } else {
-                        error.style.display = 'none';
-                        field.style.borderColor = '#e0e6ed';
-                        return true;
-                    }
-                });
-            }
-            
-            // Validate email field
-            function validateEmailField() {
-                const field = document.getElementById('email');
-                const error = document.getElementById('emailError');
-                
-                field.addEventListener('blur', function() {
-                    if (!isValidEmail(this.value)) {
-                        error.style.display = 'block';
-                        field.style.borderColor = '#e74c3c';
-                        return false;
-                    } else {
-                        error.style.display = 'none';
-                        field.style.borderColor = '#e0e6ed';
-                        return true;
-                    }
-                });
-            }
-            
-            // Validate marks field
-            function validateMarksField() {
-                const field = document.getElementById('lastExamMarks');
-                const error = document.getElementById('marksError');
-                
-                field.addEventListener('blur', function() {
-                    const value = parseFloat(this.value);
-                    if (isNaN(value) || value < 0 || value > 100) {
-                        error.style.display = 'block';
-                        field.style.borderColor = '#e74c3c';
-                        return false;
-                    } else {
-                        error.style.display = 'none';
-                        field.style.borderColor = '#e0e6ed';
-                        return true;
-                    }
-                });
-            }
-            
-            // Initialize validations
-            validateMobileField('personalMobile', 'personalMobileError', true);
-            validateMobileField('parentsMobile', 'parentsMobileError', true);
-            validateMobileField('whatsappNo', 'whatsappError', false);
-            validateEmailField();
-            validateMarksField();
-            
-            // Form submission handler
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                // Check if script URL is configured
-                if (!CONFIG.scriptUrl || CONFIG.scriptUrl.includes('YOUR_SCRIPT_ID')) {
-                    showMessage('❌ Please configure the Google Apps Script URL first', 'error');
-                    return;
-                }
-                
-                // Validate all fields before submission
-                if (!validateForm()) {
-                    showMessage('❌ Please fix all validation errors before submitting', 'error');
-                    return;
-                }
-                
-                // Disable submit button and show loading
-                const submitBtn = form.querySelector('button[type="submit"]');
-                const originalText = submitBtn.innerHTML;
-                submitBtn.innerHTML = '⏳ Saving...';
-                submitBtn.disabled = true;
-                
-                // Clear previous status messages
-                statusMessage.className = 'status-message';
-                statusMessage.textContent = '';
-                
-                try {
-                    // Get form data
-                    const formData = new FormData(form);
-                    
-                    // REMOVED: No timestamp will be added automatically
-                    // formData.append('Timestamp', new Date().toISOString());
-                    
-                    // Convert FormData to URL-encoded string
-                    const params = new URLSearchParams();
-                    for (const [key, value] of formData.entries()) {
-                        params.append(key, value);
-                    }
-                    
-                    // Send data to Google Apps Script
-                    const response = await fetch(CONFIG.scriptUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: params.toString()
-                    });
-                    
-                    const result = await response.json();
-                    
-                    if (result.status === 'success') {
-                        showMessage('✅ Enrollment data saved successfully to Google Sheets!', 'success');
-                        
-                        // Reset form after successful submission
-                        setTimeout(() => {
-                            form.reset();
-                            document.getElementById('date').value = new Date().toISOString().split('T')[0];
-                            statusMessage.className = 'status-message';
-                            submitBtn.disabled = false;
-                            submitBtn.innerHTML = originalText;
-                            
-                            // Scroll to top
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }, 2000);
-                    } else {
-                        showMessage(`❌ Error: ${result.message}`, 'error');
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = originalText;
-                    }
-                    
-                } catch (error) {
-                    showMessage(`❌ Network error: ${error.message}`, 'error');
-                    console.error('Error:', error);
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalText;
-                }
-            });
-            
-            // Form reset handler
-            form.addEventListener('reset', function() {
-                // Clear validation errors
-                document.querySelectorAll('.validation-message').forEach(msg => {
-                    msg.style.display = 'none';
-                });
-                document.querySelectorAll('input, select, textarea').forEach(field => {
-                    field.style.borderColor = '#e0e6ed';
-                });
-                
-                // Set today's date
-                document.getElementById('date').value = new Date().toISOString().split('T')[0];
-                statusMessage.className = 'status-message';
-                statusMessage.textContent = '';
-            });
-        }
+<!-- Settings Modal -->
+<div class="modal" id="settingsModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>
+        <i class="fas fa-cog" style="color: var(--primary);"></i>
+        Settings
+      </h3>
+      <button class="modal-close" onclick="closeSettings()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="settings-group">
+        <h4><i class="fas fa-palette"></i> Appearance</h4>
         
-        function validateForm() {
-            let isValid = true;
-            
-            // Check required fields
-            const requiredFields = document.querySelectorAll('[required]');
-            requiredFields.forEach(field => {
-                if (!field.value.trim()) {
-                    field.style.borderColor = '#e74c3c';
-                    isValid = false;
-                } else {
-                    field.style.borderColor = '#e0e6ed';
-                }
-            });
-            
-            // Validate email
-            const emailField = document.getElementById('email');
-            const emailError = document.getElementById('emailError');
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
-                emailError.style.display = 'block';
-                emailField.style.borderColor = '#e74c3c';
-                isValid = false;
-            }
-            
-            // Validate mobile numbers
-            function validateMobile(mobileId, errorId) {
-                const field = document.getElementById(mobileId);
-                const error = document.getElementById(errorId);
-                const mobilePattern = /^[6-9]\d{9}$/;
-                
-                if (field.value && !mobilePattern.test(field.value)) {
-                    error.style.display = 'block';
-                    field.style.borderColor = '#e74c3c';
-                    return false;
-                }
-                return true;
-            }
-            
-            if (!validateMobile('personalMobile', 'personalMobileError')) isValid = false;
-            if (!validateMobile('parentsMobile', 'parentsMobileError')) isValid = false;
-            
-            // Validate marks
-            const marksField = document.getElementById('lastExamMarks');
-            const marksError = document.getElementById('marksError');
-            const marksValue = parseFloat(marksField.value);
-            if (isNaN(marksValue) || marksValue < 0 || marksValue > 100) {
-                marksError.style.display = 'block';
-                marksField.style.borderColor = '#e74c3c';
-                isValid = false;
-            }
-            
-            return isValid;
-        }
+        <div class="setting-item">
+          <div class="setting-info">
+            <h5>Dark Mode</h5>
+            <p>Toggle between light and dark themes</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="darkModeToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
         
-        function showMessage(message, type) {
-            const statusMessage = document.getElementById('statusMessage');
-            if (statusMessage) {
-                statusMessage.textContent = message;
-                statusMessage.className = `status-message ${type}`;
-                
-                // Scroll to message
-                statusMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
+        <div class="setting-item">
+          <div class="setting-info">
+            <h5>Auto Refresh</h5>
+            <p>Update data automatically every 30 seconds</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="autoRefreshToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="settings-group">
+        <h4><i class="fas fa-bell"></i> Notifications</h4>
+        
+        <div class="setting-item">
+          <div class="setting-info">
+            <h5>Low Stock Alerts</h5>
+            <p>Get notified about low stock items</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="notificationsToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="settings-group">
+        <h4><i class="fas fa-display"></i> Display</h4>
+        
+        <div class="setting-item">
+          <div class="setting-info">
+            <h5>Full Height Pages</h5>
+            <p>Show pages in full height mode by default</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="fullHeightToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Constants
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSCE1UmJ1_AMrgbe46rjme7aFSiOSxnFd2krfnfFpATH9em9m0ew0uyeFbtZGuM5LY/exec";
+const SID = "1VE6K0AaTdQLBGtMnYEtEAHCH7xcfPN-BeZoIKV8OifI";
+const SHEET = "Inventory";
+
+// State Management
+let lowStockData = [], allRows = [];
+let currentPage = 'Dashboard';
+let autoRefreshInterval;
+let isMobile = window.innerWidth <= 992;
+let currentFilter = 'all';
+
+// DOM Elements
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.getElementById('mainContent');
+const menuToggle = document.getElementById('menuToggle');
+const themeToggle = document.getElementById('themeToggle');
+const darkModeToggle = document.getElementById('darkModeToggle');
+const dashboardView = document.getElementById('dashboardView');
+const pageView = document.getElementById('pageView');
+const iframe = document.getElementById('iframe');
+const navItems = document.querySelectorAll('.nav-item');
+
+// Initialize Theme
+function initTheme() {
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  darkModeToggle.checked = savedTheme === 'dark';
+  updateThemeIcon(savedTheme);
+}
+
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  darkModeToggle.checked = newTheme === 'dark';
+  updateThemeIcon(newTheme);
+}
+
+function updateThemeIcon(theme) {
+  const icon = themeToggle.querySelector('i');
+  icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+}
+
+// Sidebar Management
+function initSidebar() {
+  if (isMobile) {
+    sidebar.classList.add('closed');
+    menuToggle.classList.add('active');
+  } else {
+    sidebar.classList.remove('closed');
+    menuToggle.classList.remove('active');
+  }
+}
+
+function toggleSidebar() {
+  if (isMobile) {
+    sidebar.classList.toggle('open');
+    menuToggle.classList.toggle('active');
+    
+    // Close sidebar when clicking outside on mobile
+    if (sidebar.classList.contains('open')) {
+      document.addEventListener('click', closeSidebarOnClickOutside);
+    } else {
+      document.removeEventListener('click', closeSidebarOnClickOutside);
+    }
+  } else {
+    sidebar.classList.toggle('closed');
+    mainContent.classList.toggle('expanded');
+    menuToggle.classList.toggle('active');
+  }
+}
+
+function closeSidebarOnClickOutside(e) {
+  if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+    toggleSidebar();
+  }
+}
+
+// Navigation
+function updateActiveNav(pageName) {
+  navItems.forEach(item => {
+    item.classList.remove('active');
+    const text = item.querySelector('.nav-text').textContent;
+    if (text === pageName || (pageName === 'Dashboard' && text === 'Dashboard')) {
+      item.classList.add('active');
+    }
+  });
+}
+
+function loadDashboard() {
+  currentPage = 'Dashboard';
+  dashboardView.style.display = 'block';
+  pageView.style.display = 'none';
+  updateActiveNav('Dashboard');
+  
+  // Auto close sidebar on mobile
+  if (isMobile && sidebar.classList.contains('open')) {
+    toggleSidebar();
+  }
+}
+
+function loadPage(pageName, pageUrl) {
+  currentPage = pageName;
+  dashboardView.style.display = 'none';
+  pageView.style.display = 'block';
+  iframe.src = pageUrl;
+  updateActiveNav(pageName);
+  
+  // Auto close sidebar on mobile
+  if (isMobile && sidebar.classList.contains('open')) {
+    toggleSidebar();
+  }
+}
+
+// Low Stock Analysis
+function analyzeLowStock() {
+  let critical = 0, warning = 0, low = 0;
+  
+  lowStockData.forEach(item => {
+    if (item.qty < 5) {
+      critical++;
+    } else if (item.qty < 8) {
+      warning++;
+    } else {
+      low++;
+    }
+  });
+  
+  // Update summary cards
+  document.getElementById('criticalCount').textContent = critical;
+  document.getElementById('warningCount').textContent = warning;
+  document.getElementById('lowCount').textContent = low;
+  document.getElementById('totalLowStock').textContent = lowStockData.length;
+}
+
+function filterLowStock(filterType) {
+  currentFilter = filterType;
+  
+  // Update filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  
+  // Filter data
+  const filteredData = filterType === 'all' 
+    ? lowStockData 
+    : lowStockData.filter(item => {
+        if (filterType === 'critical') return item.qty < 5;
+        if (filterType === 'warning') return item.qty >= 5 && item.qty < 8;
+        if (filterType === 'low') return item.qty >= 8;
+        return true;
+      });
+  
+  // Update table
+  updateLowStockTable(filteredData);
+}
+
+function updateLowStockTable(data) {
+  const tbody = document.getElementById('lowStockTableBody');
+  
+  if (data.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-light);">
+          <i class="fas fa-check-circle" style="color: var(--success); font-size: 32px; margin-bottom: 16px; display: block;"></i>
+          No ${currentFilter === 'all' ? '' : currentFilter} low stock items found
+        </td>
+      </tr>
+    `;
+    return;
+  }
+  
+  tbody.innerHTML = data.map(item => {
+    let statusClass = 'low';
+    let statusText = 'Low';
+    let actionNeeded = 'Monitor';
+    
+    if (item.qty < 5) {
+      statusClass = 'critical';
+      statusText = 'Critical';
+      actionNeeded = 'Order Now';
+    } else if (item.qty < 8) {
+      statusClass = 'warning';
+      statusText = 'Warning';
+      actionNeeded = 'Plan Order';
+    }
+    
+    return `
+      <tr>
+        <td><strong>${item.product}</strong></td>
+        <td>${item.size}</td>
+        <td style="font-weight: 700; color: ${item.qty < 5 ? 'var(--danger)' : item.qty < 8 ? 'var(--warning)' : 'var(--primary)'};">${item.qty}</td>
+        <td><span class="stock-level ${statusClass}">${statusText}</span></td>
+        <td>${actionNeeded}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function exportLowStock() {
+  // Create CSV content
+  let csvContent = "Product,Size,Quantity,Status,Action Needed\n";
+  
+  lowStockData.forEach(item => {
+    let status = item.qty < 5 ? 'Critical' : item.qty < 8 ? 'Warning' : 'Low';
+    let action = item.qty < 5 ? 'Order Now' : item.qty < 8 ? 'Plan Order' : 'Monitor';
+    csvContent += `${item.product},${item.size},${item.qty},${status},${action}\n`;
+  });
+  
+  // Create blob and download
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  
+  link.setAttribute('href', url);
+  link.setAttribute('download', `low_stock_report_${new Date().toISOString().split('T')[0]}.csv`);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// Data Fetching
+async function fetchData() {
+  try {
+    const response = await fetch(`${SCRIPT_URL}?action=getAllData&spreadsheetId=${SID}&dataSheet=${SHEET}`);
+    const data = await response.json();
+    
+    const headers = data.shift();
+    allRows = data;
+    
+    const productIndex = headers.indexOf("Product Name");
+    const stockIndex = headers.indexOf("Stock");
+    let stockIn = 0, stockOut = 0;
+    lowStockData = [];
+
+    const sizePairs = [
+      ["Size_1", "Qty_1"], ["Size_2", "Qty_2"], ["Size_3", "Qty_3"],
+      ["Size_4", "Qty_4"], ["Size_5", "Qty_5"], ["Size_6", "Qty_6"], ["Size_7", "Qty_7"]
+    ];
+
+    data.forEach(row => {
+      const stockStatus = String(row[stockIndex] || "").trim().toLowerCase();
+      if (stockStatus === "stock in") stockIn++;
+      if (stockStatus === "out of stock") stockOut++;
+
+      sizePairs.forEach(([sizeCol, qtyCol]) => {
+        const qtyIndex = headers.indexOf(qtyCol);
+        const sizeIndex = headers.indexOf(sizeCol);
+        
+        if (qtyIndex !== -1 && sizeIndex !== -1) {
+          const quantity = parseInt(row[qtyIndex]) || 0;
+          if (quantity < 10 && quantity > 0) {
+            lowStockData.push({
+              product: row[productIndex],
+              size: row[sizeIndex],
+              qty: quantity
+            });
+          }
         }
-    </script>
+      });
+    });
+
+    // Update UI
+    updateStats(data.length, stockIn, stockOut, lowStockData.length);
+    updateLastUpdated();
+    updateLowStockPreview();
+    analyzeLowStock();
+    updateLowStockTable(lowStockData);
+    
+    // Show notification if enabled
+    if (localStorage.getItem('notifications') !== 'false' && lowStockData.length > 0) {
+      showLowStockNotification(lowStockData.length);
+    }
+    
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    document.getElementById('lastUpdated').textContent = 'Last updated: Error loading data';
+  }
+}
+
+function updateStats(total, inStock, outStock, lowStock) {
+  document.getElementById('totalInv').textContent = total;
+  document.getElementById('stockIn').textContent = inStock;
+  document.getElementById('stockOut').textContent = outStock;
+  document.getElementById('lowStockMain').textContent = lowStock;
+  document.getElementById('sidebarLowStock').textContent = lowStock;
+  document.getElementById('lowStockCount').textContent = lowStock;
+}
+
+function updateLastUpdated() {
+  const now = new Date();
+  const timeString = now.toLocaleTimeString([], { 
+    hour: '2-digit', 
+    minute: '2-digit',
+    hour12: true 
+  });
+  document.getElementById('lastUpdated').textContent = `Last updated: ${timeString}`;
+}
+
+function updateLowStockPreview() {
+  const preview = document.getElementById('lowStockPreview');
+  
+  if (lowStockData.length === 0) {
+    preview.innerHTML = `
+      <div class="preview-item">
+        <div class="item-info">
+          <h4>All Stock Levels Good</h4>
+          <p>No low stock items found</p>
+        </div>
+        <div class="item-qty" style="color: var(--success);">
+          <i class="fas fa-check-circle"></i>
+        </div>
+      </div>
+    `;
+    return;
+  }
+  
+  let html = '';
+  lowStockData.slice(0, 3).forEach(item => {
+    const severityColor = item.qty < 5 ? 'var(--danger)' : 'var(--warning)';
+    html += `
+      <div class="preview-item" onclick="openLowStock()">
+        <div class="item-info">
+          <h4>${item.product}</h4>
+          <p>Size: ${item.size}</p>
+        </div>
+        <div class="item-qty" style="color: ${severityColor};">${item.qty}</div>
+      </div>
+    `;
+  });
+  
+  if (lowStockData.length > 3) {
+    html += `
+      <div class="preview-item" onclick="openLowStock()" style="text-align: center; justify-content: center;">
+        <div class="item-info">
+          <h4 style="color: var(--primary);">+${lowStockData.length - 3} more items</h4>
+          <p>Click to view all</p>
+        </div>
+      </div>
+    `;
+  }
+  
+  preview.innerHTML = html;
+}
+
+// Low Stock Modal
+function openLowStock() {
+  document.getElementById('lowStockModal').style.display = 'flex';
+  updateActiveNav('Low Stock');
+  
+  // Auto close sidebar on mobile
+  if (isMobile && sidebar.classList.contains('open')) {
+    toggleSidebar();
+  }
+}
+
+function closeLowStock() {
+  document.getElementById('lowStockModal').style.display = 'none';
+}
+
+// Settings Modal
+function openSettings() {
+  // Load saved settings
+  const autoRefresh = localStorage.getItem('autoRefresh') !== 'false';
+  const notifications = localStorage.getItem('notifications') !== 'false';
+  const fullHeight = localStorage.getItem('fullHeight') === 'true';
+  
+  document.getElementById('autoRefreshToggle').checked = autoRefresh;
+  document.getElementById('notificationsToggle').checked = notifications;
+  document.getElementById('fullHeightToggle').checked = fullHeight;
+  
+  document.getElementById('settingsModal').style.display = 'flex';
+  updateActiveNav('Settings');
+  
+  // Auto close sidebar on mobile
+  if (isMobile && sidebar.classList.contains('open')) {
+    toggleSidebar();
+  }
+}
+
+function closeSettings() {
+  // Save settings
+  const autoRefresh = document.getElementById('autoRefreshToggle').checked;
+  const notifications = document.getElementById('notificationsToggle').checked;
+  const fullHeight = document.getElementById('fullHeightToggle').checked;
+  
+  localStorage.setItem('autoRefresh', autoRefresh);
+  localStorage.setItem('notifications', notifications);
+  localStorage.setItem('fullHeight', fullHeight);
+  
+  // Apply settings
+  if (autoRefresh) {
+    if (!autoRefreshInterval) {
+      autoRefreshInterval = setInterval(fetchData, 30000);
+    }
+  } else {
+    clearInterval(autoRefreshInterval);
+    autoRefreshInterval = null;
+  }
+  
+  document.getElementById('settingsModal').style.display = 'none';
+}
+
+// Notifications
+function showLowStockNotification(count) {
+  const lastNotification = localStorage.getItem('lastLowStockNotification');
+  const now = Date.now();
+  
+  if (!lastNotification || (now - lastNotification) > 300000) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification(`Low Stock Alert!`, {
+        body: `${count} items are running low on stock`,
+        icon: 'https://cdn-icons-png.flaticon.com/512/3522/3522835.png',
+        tag: 'low-stock-alert'
+      });
+    }
+    
+    localStorage.setItem('lastLowStockNotification', now);
+  }
+}
+
+// Event Listeners
+menuToggle.addEventListener('click', toggleSidebar);
+themeToggle.addEventListener('click', toggleTheme);
+darkModeToggle.addEventListener('click', toggleTheme);
+
+// Window Events
+window.addEventListener('load', () => {
+  initTheme();
+  initSidebar();
+  fetchData();
+  
+  // Request notification permission
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+  
+  // Set up auto-refresh if enabled
+  if (localStorage.getItem('autoRefresh') !== 'false') {
+    autoRefreshInterval = setInterval(fetchData, 30000);
+  }
+});
+
+window.addEventListener('resize', () => {
+  isMobile = window.innerWidth <= 992;
+  initSidebar();
+});
+
+// Escape key to close modals
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeLowStock();
+    closeSettings();
+  }
+});
+
+// Close modals on backdrop click
+document.querySelectorAll('.modal').forEach(modal => {
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+});
+
+// Initialize
+loadDashboard();
+</script>
 </body>
-
 </html>
