@@ -1001,13 +1001,14 @@ tr:hover {
           </div>
           
           <div class="form-group">
-            <label class="form-label">GST Number *</label>
-            <input type="text" class="form-input" id="gstNumber" maxlength="15"
-                   placeholder="Format: 12XXXXXXXXXXXXX"
-                   pattern="^[0-9]{2}[A-Z0-9]{13}$"
-				   oninput="this.value = this.value.toUpperCase()"
-                   title="GST must start with 2 numbers, followed by 13 uppercase letters or numbers">
-          </div>
+    <label class="form-label">GST Number *</label>
+    <input type="text" class="form-input" id="gstNumber" maxlength="15" required
+           placeholder="Format: 12XXXXXXXXXXXXX"
+           pattern="^[0-9]{2}[A-Z0-9]{13}$"
+           oninput="this.value = this.value.toUpperCase()"
+           title="GST must start with 2 numbers, followed by 13 uppercase letters or numbers"
+           readonly>
+		</div>
           
           <div class="form-group">
             <label class="form-label">GST % *</label>
@@ -1026,8 +1027,8 @@ tr:hover {
           </div>
 		  
 		  <div class="form-group">
-            <label class="form-label">Expenses Amount (₹) *</label>
-            <input type="number" class="form-input" id="expensesAmount" min="0" step="0.01" required>
+            <label class="form-label">Expenses Amount (₹) </label>
+            <input type="number" class="form-input" id="expensesAmount" min="0" step="0.01">
           </div>
           
           <div class="form-group">
@@ -1073,6 +1074,7 @@ const CONFIG = {
 
 let allData = [];
 let allSuppliers = [];
+let supplierGSTMap = {}; // NEW: Map to store supplier GST numbers
 let selectedRow = null;
 let selectedRowData = null;
 let filteredData = [];
@@ -1135,7 +1137,7 @@ function closeMessageModal() {
  *******************************/
 function loadData() {
   loader.style.display = 'flex';
-  Promise.all([loadAllData(), loadSuppliers()])
+  Promise.all([loadAllData(), loadSuppliersWithGST()]) // UPDATED: Changed to loadSuppliersWithGST
     .then(() => {
       loader.style.display = 'none';
       updateEmptyState();
@@ -1160,18 +1162,125 @@ function loadAllData() {
     });
 }
 
-function loadSuppliers() {
-  return fetch(`${scriptUrl}?action=getSuppliers&spreadsheetId=${CONFIG.spreadsheetId}&supplierSheet=${CONFIG.supplierSheet}&supplierHeader=${CONFIG.supplierHeader}`)
+// UPDATED: Function to load suppliers with GST information
+function loadSuppliersWithGST() {
+  return fetch(`${scriptUrl}?action=getAllData&spreadsheetId=${CONFIG.spreadsheetId}&dataSheet=${CONFIG.supplierSheet}`)
     .then(res => res.json())
     .then(data => {
-      allSuppliers = data;
+      allSuppliers = [];
+      supplierGSTMap = {};
+      
+      if (data.length > 0) {
+        const headers = data[0];
+        const rows = data.slice(1);
+        
+        const supplierIndex = headers.findIndex(h => 
+          h.toString().trim() === CONFIG.supplierHeader
+        );
+        
+        const gstIndex = headers.findIndex(h => 
+          h.toString().trim().toLowerCase().includes('gst')
+        );
+        
+        if (supplierIndex !== -1) {
+          rows.forEach(row => {
+            const supplierName = row[supplierIndex];
+            if (supplierName && supplierName.toString().trim()) {
+              const trimmedName = supplierName.toString().trim();
+              allSuppliers.push(trimmedName);
+              
+              if (gstIndex !== -1 && row[gstIndex]) {
+                supplierGSTMap[trimmedName] = row[gstIndex].toString().trim().toUpperCase();
+              }
+            }
+          });
+          
+          allSuppliers = [...new Set(allSuppliers)].sort();
+        }
+      }
+      
       populateSupplierModal();
     })
     .catch(err => {
-      console.error('Failed to load suppliers:', err);
+      console.error('Failed to load suppliers with GST:', err);
       allSuppliers = [];
+      supplierGSTMap = {};
       populateSupplierModal();
     });
+}
+
+/*******************************
+ * GST AUTO-FILL FUNCTIONS
+ *******************************/
+function updateGSTField(supplierName) {
+  const gstInput = document.getElementById('gstNumber');
+  
+  if (supplierName && supplierGSTMap[supplierName]) {
+    // Auto-fill GST from supplier data
+    const gstNumber = supplierGSTMap[supplierName];
+    gstInput.value = gstNumber;
+	gstInput.readOnly = true; // Make field read-only
+    gstInput.classList.add('readonly'); // Add readonly styling
+    
+    // Add visual feedback that it's auto-filled
+    const gstSourceInfo = document.createElement('div');
+    gstSourceInfo.id = 'gstSourceInfo';
+    gstSourceInfo.style.cssText = `
+      font-size: 12px;
+      color: var(--success);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      animation: fadeIn 0.3s ease-out;
+    `;
+    gstSourceInfo.innerHTML = `
+      <span style="font-size: 14px;">✓</span>
+      <span>Auto-filled from supplier record (read-only)</span>
+    `;
+    
+    // Remove existing info if present
+    const existingInfo = document.getElementById('gstSourceInfo');
+    if (existingInfo) {
+      existingInfo.remove();
+    }
+    
+    // Insert after input
+    gstInput.parentNode.insertBefore(gstSourceInfo, gstInput.nextSibling);
+    
+    // Validate the auto-filled GST
+    validateGSTField(gstNumber);
+  } else {
+    // Clear GST field if supplier has no GST
+    gstInput.value = '';
+    
+    // Remove info message
+    const existingInfo = document.getElementById('gstSourceInfo');
+    if (existingInfo) {
+      existingInfo.remove();
+    }
+  }
+}
+
+function validateGSTField(value = null) {
+  const gstInput = document.getElementById('gstNumber');
+  const gstValue = value || gstInput.value.trim().toUpperCase();
+  const gstRegex = /^[0-9]{2}[A-Z0-9]{13}$/;
+  
+  // Remove previous validation styling
+  gstInput.classList.remove('valid', 'invalid');
+  
+  if (!gstValue) {
+    return false;
+  }
+  
+  if (gstRegex.test(gstValue)) {
+    gstInput.classList.add('valid');
+    return true;
+  } else {
+    gstInput.classList.add('invalid');
+    return false;
+  }
 }
 
 /*******************************
@@ -1503,9 +1612,23 @@ function populateSupplierModal() {
         .toUpperCase()
         .substring(0, 2);
       
+      const hasGST = supplierGSTMap[supplier];
+      
       li.innerHTML = `
         <div class="supplier-icon">${initials}</div>
-        <div class="supplier-name">${supplier}</div>
+        <div>
+          <div class="supplier-name">${supplier}</div>
+          ${hasGST ? 
+            `<div style="font-size: 12px; color: var(--success); margin-top: 2px; display: flex; align-items: center; gap: 4px;">
+              <span style="font-size: 14px;">✓</span>
+              <span>GST: ${hasGST}</span>
+            </div>` : 
+            `<div style="font-size: 12px; color: var(--warning); margin-top: 2px; display: flex; align-items: center; gap: 4px;">
+              <span style="font-size: 14px;">⚠️</span>
+              <span>No GST registered</span>
+            </div>`
+          }
+        </div>
       `;
       
       li.onclick = function() {
@@ -1556,6 +1679,7 @@ function closeAddFormModal() {
   document.body.classList.remove('modal-open');
 }
 
+// UPDATED: Function to select supplier with GST auto-fill
 function selectSupplier() {
   if (!currentSelectedSupplier) {
     showMessage('Selection Required', 'Please select a supplier first.', 'warning');
@@ -1570,6 +1694,9 @@ function selectSupplier() {
     // Update the add form
     document.getElementById('selectedSupplierText').textContent = currentSelectedSupplier;
     document.getElementById('supplierSelect').value = currentSelectedSupplier;
+    
+    // NEW: Auto-fill GST number based on selected supplier
+    updateGSTField(currentSelectedSupplier);
   }
   
   closeSupplierModal();
@@ -1592,7 +1719,18 @@ function openAddFormModal() {
   document.getElementById('selectedSupplierText').textContent = 'Select Supplier';
   document.getElementById('supplierSelect').value = '';
   document.getElementById('productName').value = '';
-  document.getElementById('gstNumber').value = '';
+  
+  // Clear GST field and validation
+  const gstInput = document.getElementById('gstNumber');
+  gstInput.value = '';
+  gstInput.classList.remove('valid', 'invalid');
+  
+  // Remove GST source info
+  const existingInfo = document.getElementById('gstSourceInfo');
+  if (existingInfo) {
+    existingInfo.remove();
+  }
+  
   document.getElementById('gstPercent').value = '';
   document.getElementById('totalAmount').value = '';
   document.getElementById('expensesAmount').value = '';
@@ -1604,10 +1742,6 @@ function openAddFormModal() {
   currentSelectedSupplier = null;
   
   document.getElementById('addFormModal').style.display = 'block';
-}
-
-function closeAddFormModal() {
-  document.getElementById('addFormModal').style.display = 'none';
 }
 
 // File upload preview
@@ -1623,29 +1757,35 @@ document.getElementById('receiptFile').addEventListener('change', function(e) {
   }
 });
 
-// Add form submission
+// UPDATED: Add form submission with GST validation
 document.getElementById('stockForm').addEventListener('submit', function(e) {
   e.preventDefault();
   
-// Get GST value and force uppercase
-const gstInput = document.getElementById('gstNumber');
-const gstNumber = gstInput.value.trim().toUpperCase();
-
-// Update input field so user also sees uppercase
-gstInput.value = gstNumber;
-
-// Validate GST pattern
-const gstRegex = /^[0-9]{2}[A-Z0-9]{13}$/;
-
-if (!gstRegex.test(gstNumber)) {
-  showMessage(
-    'Invalid GST',
-    'GST must start with 2 digits, followed by 13 uppercase letters/numbers.',
-    'error'
-  );
-  return;
-}
-
+  // Get GST value and force uppercase
+  const gstInput = document.getElementById('gstNumber');
+  const gstNumber = gstInput.value.trim().toUpperCase();
+  
+  // Update input field so user also sees uppercase
+  gstInput.value = gstNumber;
+  
+  // Validate GST pattern
+  const gstRegex = /^[0-9]{2}[A-Z0-9]{13}$/;
+  
+  if (!gstNumber) {
+    showMessage('GST Required', 'GST Number is required. Please enter or select a supplier with GST.', 'error');
+    gstInput.focus();
+    return;
+  }
+  
+  if (!gstRegex.test(gstNumber)) {
+    showMessage(
+      'Invalid GST Format',
+      'GST must start with 2 digits, followed by 13 uppercase letters/numbers (Total 15 characters).',
+      'error'
+    );
+    gstInput.focus();
+    return;
+  }
   
   // Validate supplier
   const supplier = document.getElementById('supplierSelect').value;
@@ -1665,7 +1805,7 @@ if (!gstRegex.test(gstNumber)) {
     gstNumber,
     document.getElementById('gstPercent').value,
     document.getElementById('totalAmount').value,
-	document.getElementById('expensesAmount').value,
+    document.getElementById('expensesAmount').value,
     document.getElementById('note').value,
     '__RECEIPT__'
   ];
@@ -1825,6 +1965,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 </body>
-
 </html>
-
